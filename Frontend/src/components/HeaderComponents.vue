@@ -1,9 +1,9 @@
 <template>
   <div
-    class="max-w-full h-30 bg-cherry-rose-500 bg-header bg-center bg-size-[auto_15rem] bg-no-repeat"
+    class="bg-cherry-rose-500 bg-header h-30 max-w-full rounded-sm border border-gray-500/80 bg-center bg-no-repeat lg:bg-size-[auto_15rem] 2xl:bg-size-[auto_25rem]"
   >
-    <div class="w-full h-full backdrop-blur-xs bg-white/2 flex items-center justify-center">
-        <header class="font-aphrodite text-6xl text-cherry-rose-200">Anonymous Confession</header>
+    <div class="flex h-full w-full items-center justify-center bg-white/2 backdrop-blur-xs">
+      <header class="font-pinlock text-cherry-rose-400 text-6xl">Anonymous Confession</header>
     </div>
   </div>
 </template>

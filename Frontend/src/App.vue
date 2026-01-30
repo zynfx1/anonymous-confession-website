@@ -1,12 +1,22 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HeaderComponents from './components/HeaderComponents.vue'
+import { RouterLink, RouterView } from "vue-router";
+import HeaderComponents from "./components/HeaderComponents.vue";
+import FooterComponents from "./components/FooterComponents.vue";
+import AddConfession from "./components/AddConfession.vue";
+import { useConfessionStore } from "./stores/AddConfessionStore.ts";
+
+const confessionModal = useConfessionStore();
 </script>
 
 <template>
   <div class="bg-white">
-    <HeaderComponents class="m-2"></HeaderComponents>
+    <HeaderComponents class="m-1"></HeaderComponents>
+    <AddConfession
+      :show="confessionModal.isModalVisible"
+      @close="confessionModal.closeModal"
+    ></AddConfession>
     <RouterView></RouterView>
+    <FooterComponents></FooterComponents>
   </div>
 </template>
 
