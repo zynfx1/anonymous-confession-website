@@ -26,15 +26,35 @@ const emit = defineEmits<{
         @click.self="emit('close')"
       >
         <div
-          class="inset fixed flex flex-col items-center justify-center rounded-xl bg-white p-3 2xl:inset-x-175 2xl:inset-y-80"
+          class="inset fixed flex flex-col items-center justify-center rounded-xl bg-white p-3 2xl:inset-x-175 2xl:inset-y-65"
         >
           <header class="font-pinlock text-cherry-rose-400 text-4xl">Anonymous Confession</header>
-          <div class="h-full w-full py-2">
+          <div class="font-poppins flex w-full flex-col">
+            <label for="">Name:</label>
+            <input
+              type="text"
+              name=""
+              id=""
+              placeholder="Enter name..."
+              class="border-cherry-rose-300 focus:outline-cherry-rose-300 w-40 rounded-sm border px-1"
+            />
+          </div>
+          <div class="font-poppins my-2 flex w-full flex-col">
+            <label for="">Timer:</label>
+            <input
+              type="time"
+              name=""
+              id=""
+              class="border-cherry-rose-300 focus:outline-cherry-rose-300 w-40 rounded-sm border px-1"
+            />
+          </div>
+          <div class="font-poppins h-full w-full">
+            <label for="">Confession</label>
             <textarea
               name=""
               id=""
               placeholder="Write your confession here..."
-              class="border-cherry-rose-300 focus:outline-cherry-rose-300 h-full w-full resize-none rounded-sm border px-1 focus:outline"
+              class="border-cherry-rose-300 focus:outline-cherry-rose-300 h-44 w-full resize-none rounded-sm border px-1 focus:outline"
             ></textarea>
           </div>
           <div class="flex h-20 w-full items-center justify-end gap-2">

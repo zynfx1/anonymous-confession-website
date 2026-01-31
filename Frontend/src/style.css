@@ -61,6 +61,7 @@
   --color-pine-teal-950: #0c1715;
 
   --color-custom-green: #c7d3c3;
+  --color-custom-purple: #3e1045;
 
   --color-baltic-blue-50: #eef1f6;
   --color-baltic-blue-100: #dee2ed;
@@ -85,6 +86,27 @@
   --color-jungle-green-800: #1d5247;
   --color-jungle-green-900: #1c453d;
   --color-jungle-green-950: #0b2824;
+
+  --animate-infinite-scroll-left: infinite-scroll-left 5s linear infinite;
+  --animate-infinite-scroll-right: infinite-scroll-right 5s linear infinite;
+
+  @keyframes infinite-scroll-left {
+    from {
+      transform: translateX();
+    }
+    to {
+      transform: translateX(-12.5%);
+    }
+  }
+
+  @keyframes infinite-scroll-right {
+    from {
+      transform: translateX(-12.5%);
+    }
+    to {
+      transform: translateX();
+    }
+  }
 
   --background-image-header1: url("/src/assets/img/bg3.jpg");
   --background-image-header: url("/src/assets/img/bg1.jpg")
