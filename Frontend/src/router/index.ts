@@ -1,10 +1,10 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router";
-import Homepage from "@/views/Homepage.vue";
-import Admin from "@/views/Admin.vue";
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
+import Homepage from '@/views/Homepage.vue';
+import Admin from '@/views/Admin.vue';
 
 const routes: RouteRecordRaw[] = [
-  { path: "/", component: Homepage },
-  { path: "/admin", component: Admin },
+  { path: '/', component: Homepage },
+  { path: '/admin', component: Admin },
 ];
 
 const router = createRouter({
