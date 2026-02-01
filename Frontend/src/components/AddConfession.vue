@@ -1,13 +1,30 @@
 <script setup lang="ts">
-import { useConfessionStore } from "@/stores/AddConfessionStore";
+import { useConfessionStore } from '@/stores/AddConfessionStore';
+import { ref } from 'vue';
+import type { confessionType } from '@/types/confession';
+const newConfessionName = ref('');
+const newConfessionComment = ref('');
 
 defineProps<{
   show: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: "close"): void;
+  (e: 'confessionEnvelope', payload: confessionType): void;
+  (e: 'close'): void;
 }>();
+
+const addNewConfession = () => {
+  if (newConfessionComment.value === '') {
+    return;
+  }
+
+  const newConfession: confessionType = {
+    name: newConfessionName.value,
+    confession: newConfessionComment.value,
+  };
+  emit('confessionEnvelope', newConfession);
+};
 </script>
 <template>
   <Teleport to="body">
@@ -32,6 +49,7 @@ const emit = defineEmits<{
           <div class="font-poppins flex w-full flex-col">
             <label for="">Name:</label>
             <input
+              v-model="newConfessionName"
               type="text"
               name=""
               id=""
@@ -51,6 +69,7 @@ const emit = defineEmits<{
           <div class="font-poppins h-full w-full">
             <label for="">Confession</label>
             <textarea
+              v-model="newConfessionComment"
               name=""
               id=""
               placeholder="Write your confession here..."
@@ -65,6 +84,7 @@ const emit = defineEmits<{
               Close
             </button>
             <button
+              @click.prevent="addNewConfession"
               class="border-cherry-rose-300 font-poppins bg-cherry-rose-300 hover:bg-cherry-rose-400/80 rounded-sm border p-3 text-white transition duration-200 ease-in-out"
             >
               Add Confession

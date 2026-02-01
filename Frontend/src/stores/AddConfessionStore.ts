@@ -1,16 +1,34 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { defineStore } from 'pinia';
+import { ref, type Ref } from 'vue';
+import api from '@/api/axios';
+import type { confessionType } from '@/types/confession';
 
 export const useConfessionStore = defineStore('confessionStore', () => {
-  const isModalVisible = ref(false)
+  const isModalVisible = ref(false);
 
   const openModal = () => {
-    isModalVisible.value = true
-  }
+    isModalVisible.value = true;
+  };
 
   const closeModal = () => {
-    isModalVisible.value = false
-  }
+    isModalVisible.value = false;
+  };
 
-  return { isModalVisible, openModal, closeModal }
-})
+  return { isModalVisible, openModal, closeModal };
+});
+
+export const addNewConfession = defineStore('newConfession', () => {
+  const confessionList = ref<confessionType[]>([]);
+
+  const newConfessionFunction = async (confession: confessionType) => {
+    try {
+      const response = await api.post('/addNewConfession', confession);
+      confessionList.value = response.data.result;
+      console.log(response.data.result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return { newConfessionFunction, confessionList };
+});
