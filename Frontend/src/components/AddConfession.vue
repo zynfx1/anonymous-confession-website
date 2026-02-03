@@ -1,18 +1,42 @@
 <script setup lang="ts">
-import { useConfessionStore } from '@/stores/AddConfessionStore';
-import { ref } from 'vue';
+import { useConfessionStore, useTimerStore } from '@/stores/AddConfessionStore';
+import { computed, ref } from 'vue';
 import type { confessionType } from '@/types/confession';
+const timerStore = useTimerStore();
 const newConfessionName = ref('');
 const newConfessionComment = ref('');
+const inputMinutes = ref<number>(1);
+const inputSeconds = ref<number>(30);
+const timeLeft = ref<number>(0);
+let timerInterval: number | null = null;
 
 defineProps<{
   show: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: 'confessionEnvelope', payload: confessionType): void;
   (e: 'close'): void;
+  (e: 'minutes', input: number): void;
+  (e: 'seconds', input: number): void;
+  (e: 'confessionEnvelope', payload: confessionType): void;
 }>();
+
+const startTimer = () => {
+  timerStore.timeLeft = inputMinutes.value * 60 + inputSeconds.value;
+
+  timerInterval = window.setInterval(() => {
+    if (timeLeft.value > 0) {
+      timeLeft.value--;
+    } else {
+      stopTimer();
+      alert('Time is up!');
+    }
+  }, 1000);
+};
+
+const stopTimer = () => {
+  if (timerInterval) clearInterval(timerInterval);
+};
 
 const addNewConfession = () => {
   if (newConfessionComment.value === '') {
@@ -20,9 +44,12 @@ const addNewConfession = () => {
   }
 
   const newConfession: confessionType = {
+    id: Date.now(),
     name: newConfessionName.value,
     confession: newConfessionComment.value,
   };
+
+  newConfessionComment.value = '';
   emit('confessionEnvelope', newConfession);
 };
 </script>
@@ -43,7 +70,7 @@ const addNewConfession = () => {
         @click.self="emit('close')"
       >
         <div
-          class="inset fixed flex flex-col items-center justify-center rounded-xl bg-white p-3 2xl:inset-x-175 2xl:inset-y-65"
+          class="inset fixed flex flex-col items-center justify-center rounded-xl bg-white p-3 lg:inset-x-105 lg:inset-y-25 2xl:inset-x-175 2xl:inset-y-80"
         >
           <header class="font-pinlock text-cherry-rose-400 text-4xl">Anonymous Confession</header>
           <div class="font-poppins flex w-full flex-col">
@@ -58,13 +85,25 @@ const addNewConfession = () => {
             />
           </div>
           <div class="font-poppins my-2 flex w-full flex-col">
+            <p>{{ timerStore.timeLeft }}</p>
             <label for="">Timer:</label>
-            <input
-              type="time"
-              name=""
-              id=""
-              class="border-cherry-rose-300 focus:outline-cherry-rose-300 w-40 rounded-sm border px-1"
-            />
+            <div class="flex w-full">
+              <input
+                v-model.number="inputMinutes"
+                type="number"
+                name=""
+                id=""
+                class="border-cherry-rose-300 focus:outline-cherry-rose-300 w-15 rounded-sm border px-1"
+              />
+              <header class="mx-1 text-2xl">:</header>
+              <input
+                v-model.number="inputSeconds"
+                type="number"
+                name=""
+                id=""
+                class="border-cherry-rose-300 focus:outline-cherry-rose-300 w-15 rounded-sm border px-1"
+              />
+            </div>
           </div>
           <div class="font-poppins h-full w-full">
             <label for="">Confession</label>
@@ -84,7 +123,7 @@ const addNewConfession = () => {
               Close
             </button>
             <button
-              @click.prevent="addNewConfession"
+              @click.prevent="(addNewConfession(), startTimer())"
               class="border-cherry-rose-300 font-poppins bg-cherry-rose-300 hover:bg-cherry-rose-400/80 rounded-sm border p-3 text-white transition duration-200 ease-in-out"
             >
               Add Confession

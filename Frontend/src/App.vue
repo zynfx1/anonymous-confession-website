@@ -4,6 +4,7 @@ import HeaderComponents from './components/HeaderComponents.vue';
 import FooterComponents from './components/FooterComponents.vue';
 import AddConfession from './components/AddConfession.vue';
 import { useConfessionStore, addNewConfession } from './stores/AddConfessionStore.ts';
+
 import ConfessionCard from './components/ConfessionCard.vue';
 
 const confessionModal = useConfessionStore();
