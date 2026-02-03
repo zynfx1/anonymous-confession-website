@@ -1,14 +1,52 @@
 <script setup lang="ts">
 import { addNewConfession, useTimerStore } from '@/stores/AddConfessionStore';
+import type { confessionType } from '@/types/confession';
+import { onMounted, ref, computed } from 'vue';
+import type { st } from 'vue-router/dist/router-CWoNjPRp.mjs';
+const confessionStore = addNewConfession();
+const timeLeft = ref<number>(0);
+let timerInterval: number | null = null;
 
-const newConfession = addNewConfession();
-const timerStore = useTimerStore();
-defineProps<{
+const props = defineProps<{
   data: {
+    id: number;
     name: string;
     confession: string;
+    minutes: number;
+    seconds: number;
   };
 }>();
+
+const handleDelete = () => {
+  confessionStore.reqDeleteCardFunction(props.data.id);
+};
+
+const formattedTime = computed(() => {
+  const min = Math.floor(timeLeft.value / 60);
+  const sec = timeLeft.value % 60;
+  return `${min}:${sec.toString().padStart(2, '0')}`;
+});
+const startTimer = () => {
+  timeLeft.value = props.data.minutes * 60 + props.data.seconds;
+
+  timerInterval = window.setInterval(() => {
+    if (timeLeft.value > 0) {
+      timeLeft.value--;
+    } else {
+      stopTimer();
+      handleDelete();
+      window.location.reload();
+    }
+  }, 1000);
+};
+
+const stopTimer = () => {
+  if (timerInterval) clearInterval(timerInterval);
+};
+
+onMounted(() => {
+  startTimer();
+});
 </script>
 
 <template>
@@ -18,7 +56,7 @@ defineProps<{
     <div class="h-full w-full">
       <div class="flex w-full items-center justify-between px-4">
         <header class=" ">Anonymous {{ data.name }}</header>
-        <header class="text-red-500">{{ timerStore.formattedTime }}</header>
+        <header class="text-red-500">{{ formattedTime }}</header>
       </div>
 
       <div class="flex flex-wrap truncate rounded-md p-4 lg:h-68 2xl:h-95">

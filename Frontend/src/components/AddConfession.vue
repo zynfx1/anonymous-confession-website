@@ -7,9 +7,9 @@ const newConfessionName = ref('');
 const newConfessionComment = ref('');
 const inputMinutes = ref<number>(1);
 const inputSeconds = ref<number>(30);
-const timeLeft = ref<number>(0);
-let timerInterval: number | null = null;
 
+
+  
 defineProps<{
   show: boolean;
 }>();
@@ -21,23 +21,6 @@ const emit = defineEmits<{
   (e: 'confessionEnvelope', payload: confessionType): void;
 }>();
 
-const startTimer = () => {
-  timerStore.timeLeft = inputMinutes.value * 60 + inputSeconds.value;
-
-  timerInterval = window.setInterval(() => {
-    if (timeLeft.value > 0) {
-      timeLeft.value--;
-    } else {
-      stopTimer();
-      alert('Time is up!');
-    }
-  }, 1000);
-};
-
-const stopTimer = () => {
-  if (timerInterval) clearInterval(timerInterval);
-};
-
 const addNewConfession = () => {
   if (newConfessionComment.value === '') {
     return;
@@ -47,6 +30,8 @@ const addNewConfession = () => {
     id: Date.now(),
     name: newConfessionName.value,
     confession: newConfessionComment.value,
+    minutes: inputMinutes.value,
+    seconds: inputSeconds.value,
   };
 
   newConfessionComment.value = '';
@@ -123,7 +108,7 @@ const addNewConfession = () => {
               Close
             </button>
             <button
-              @click.prevent="(addNewConfession(), startTimer())"
+              @click.prevent="addNewConfession()"
               class="border-cherry-rose-300 font-poppins bg-cherry-rose-300 hover:bg-cherry-rose-400/80 rounded-sm border p-3 text-white transition duration-200 ease-in-out"
             >
               Add Confession

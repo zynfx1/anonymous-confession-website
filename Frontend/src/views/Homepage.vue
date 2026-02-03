@@ -11,7 +11,7 @@ const newConfession = addNewConfession();
 const carouselRef = ref<HTMLElement | null>(null);
 
 // Fixed speed in pixels per second
-const SPEED = 120; // Adjust this: lower = slower, higher = faster
+const SPEED = 10; // Adjust this: lower = slower, higher = faster
 
 const dynamicDuration = computed(() => {
   if (!carouselRef.value || newConfession.confessionList.length === 0) {
@@ -62,13 +62,13 @@ onMounted(async () => {
         class="animate-infinite-scroll-left flex w-max items-center justify-center hover:[animation-play-state:paused]"
       >
         <ConfessionCard
-          v-for="(item, index) in (newConfession.confessionList)"
+          v-for="(item, index) in newConfession.confessionList"
           :key="`first-${index}`"
           :data="item"
         />
 
         <ConfessionCard
-          v-for="(item, index) in (newConfession.confessionList)"
+          v-for="(item, index) in newConfession.confessionList"
           :key="`second-${index}`"
           :data="item"
         />

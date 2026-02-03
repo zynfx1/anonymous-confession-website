@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import { computed, ref, type Ref } from 'vue';
 import api from '@/api/axios';
 import type { confessionType } from '@/types/confession';
+import axios from 'axios';
+import type { st } from 'vue-router/dist/router-CWoNjPRp.mjs';
 
 export const useConfessionStore = defineStore('confessionStore', () => {
   const isModalVisible = ref(false);
@@ -30,7 +32,16 @@ export const addNewConfession = defineStore('newConfession', () => {
     }
   };
 
-  return { newConfessionFunction, confessionList };
+  const reqDeleteCardFunction = async (id: number) => {
+    try {
+      const response = await api.delete(`/delete-id/${id}`);
+      console.log(response.data.result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return { reqDeleteCardFunction, newConfessionFunction, confessionList };
 });
 
 export const useTimerStore = defineStore('timerStore', () => {
@@ -43,8 +54,6 @@ export const useTimerStore = defineStore('timerStore', () => {
     const sec = timeLeft.value % 60;
     return `${min}:${sec.toString().padStart(2, '0')}`;
   });
-
-  
 
   return { timeLeft, formattedTime, console };
 });
