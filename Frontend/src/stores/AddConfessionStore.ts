@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, type Ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 import api from '@/api/axios';
 import type { confessionType } from '@/types/confession';
 
@@ -31,4 +31,20 @@ export const addNewConfession = defineStore('newConfession', () => {
   };
 
   return { newConfessionFunction, confessionList };
+});
+
+export const useTimerStore = defineStore('timerStore', () => {
+  const timeLeft = ref<number>(0);
+
+  console.log(timeLeft.value);
+
+  const formattedTime = computed(() => {
+    const min = Math.floor(timeLeft.value / 60);
+    const sec = timeLeft.value % 60;
+    return `${min}:${sec.toString().padStart(2, '0')}`;
+  });
+
+  
+
+  return { timeLeft, formattedTime, console };
 });

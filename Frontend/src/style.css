@@ -92,10 +92,10 @@
 
   @keyframes infinite-scroll-left {
     from {
-      transform: translateX(100vw);
+      transform: translateX();
     }
     to {
-      transform: translateX(-100%);
+      transform: translateX(-50%);
     }
   }
 

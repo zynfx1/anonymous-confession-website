@@ -1,29 +1,31 @@
 <script setup lang="ts">
-import { useConfessionStore, addNewConfession } from '@/stores/AddConfessionStore';
+import { useConfessionStore, addNewConfession, useTimerStore } from '@/stores/AddConfessionStore';
+
+import HeaderComponents from '@/components/HeaderComponents.vue';
 import ConfessionCard from '@/components/ConfessionCard.vue';
 import { ref, computed, watch, nextTick, onMounted } from 'vue';
+const timerStore = useTimerStore();
 const confessionModal = useConfessionStore();
 const newConfession = addNewConfession();
 
 const carouselRef = ref<HTMLElement | null>(null);
 
 // Fixed speed in pixels per second
-const SPEED = 200; // Adjust this: lower = slower, higher = faster
+const SPEED = 120; // Adjust this: lower = slower, higher = faster
 
 const dynamicDuration = computed(() => {
   if (!carouselRef.value || newConfession.confessionList.length === 0) {
     return 20; // Default
   }
 
-  // Get actual width of the carousel content
+  // Get actual width of the carousel content (already doubled)
   const carouselWidth = carouselRef.value.scrollWidth;
-  const viewportWidth = window.innerWidth;
 
-  // Total distance = viewport width + carousel width
-  const totalDistance = viewportWidth + carouselWidth;
+  // We only need to move HALF the distance (since we duplicated)
+  const halfWidth = carouselWidth / 2;
 
   // Duration = distance / speed
-  return totalDistance / SPEED;
+  return halfWidth / SPEED;
 });
 
 // Recalculate when items change
@@ -31,17 +33,11 @@ watch(
   () => newConfession.confessionList.length,
   async () => {
     await nextTick();
-    // Force recalculation by triggering the computed property
-    if (carouselRef.value) {
-      carouselRef.value.style.animationDuration = `${dynamicDuration.value}s`;
-    }
   },
 );
 
-onMounted(() => {
-  if (carouselRef.value) {
-    carouselRef.value.style.animationDuration = `${dynamicDuration.value}s`;
-  }
+onMounted(async () => {
+  await nextTick();
 });
 </script>
 <template>
@@ -52,52 +48,35 @@ onMounted(() => {
       controls
       autoplay
       loop
-      class="absolute inset-0 contrast-100 drop-shadow-lg drop-shadow-black/50 grayscale-100 2xl:inset-y-31"
+      class="absolute inset-0 mix-blend-lighten lg:inset-y-32 lg:top-32 2xl:inset-y-31"
     >
-      <source src="../assets/video/video.webm" />
+      <source src="../assets/video/valentines.mp4" />
     </video>
-    <div class="mt-2 h-94 w-full overflow-hidden py-2">
+
+    <div
+      class="mt-2 flex w-full items-center justify-center overflow-hidden py-2 lg:h-full 2xl:h-full"
+    >
       <div
         ref="carouselRef"
-        :style="{ animationDuration: `${dynamicDuration}s` }"
+        :style="{ '--duration': `${dynamicDuration}s` }"
         class="animate-infinite-scroll-left flex w-max items-center justify-center hover:[animation-play-state:paused]"
       >
-        <div
-          v-for="i in 5"
-          :key="i"
-          :aria-hidden="i > 1"
-          class="flex h-full w-full items-center justify-center"
-        >
-          <ConfessionCard
-            v-for="item in newConfession.confessionList"
-            :key="item.name"
-            :data="item"
-          />
-        </div>
+        <ConfessionCard
+          v-for="(item, index) in (newConfession.confessionList)"
+          :key="`first-${index}`"
+          :data="item"
+        />
+
+        <ConfessionCard
+          v-for="(item, index) in (newConfession.confessionList)"
+          :key="`second-${index}`"
+          :data="item"
+        />
       </div>
     </div>
-    <div class="mt-2 h-94 w-full overflow-hidden py-2">
-      <div
-        ref="carouselRef"
-        :style="{ animationDuration: `${dynamicDuration}s` }"
-        class="animate-infinite-scroll-right flex w-max items-center justify-center hover:[animation-play-state:paused]"
-      >
-        <div
-          v-for="i in 5"
-          :key="i"
-          :aria-hidden="i > 1"
-          class="flex h-full w-full items-center justify-center"
-        >
-          <ConfessionCard
-            v-for="item in newConfession.confessionList"
-            :key="item.name"
-            :data="item"
-          />
-        </div>
-      </div>
-    </div>
+
     <div class="mt-30 w-full"></div>
-    <div class="absolute flex h-40 w-full items-center justify-end 2xl:top-233">
+    <div class="absolute flex h-40 w-full items-center justify-end lg:top-170 2xl:top-233">
       <img
         src="../assets/img/plus1.png"
         alt=""
