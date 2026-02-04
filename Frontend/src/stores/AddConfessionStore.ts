@@ -22,11 +22,20 @@ export const useConfessionStore = defineStore('confessionStore', () => {
 export const addNewConfession = defineStore('newConfession', () => {
   const confessionList = ref<confessionType[]>([]);
 
+  const fetchAllConfessions = async () => {
+    try {
+      const response = await api.get('/all-confessions');
+      confessionList.value = response.data.con;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const newConfessionFunction = async (confession: confessionType) => {
     try {
       const response = await api.post('/addNewConfession', confession);
-      confessionList.value = response.data.result;
-      console.log(response.data.result);
+      confessionList.value = response.data.res;
+      console.log(response.data.res);
     } catch (error) {
       console.log(error);
     }
@@ -41,7 +50,7 @@ export const addNewConfession = defineStore('newConfession', () => {
     }
   };
 
-  return { reqDeleteCardFunction, newConfessionFunction, confessionList };
+  return { reqDeleteCardFunction, newConfessionFunction, confessionList, fetchAllConfessions };
 });
 
 export const useTimerStore = defineStore('timerStore', () => {

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { useConfessionStore, addNewConfession, useTimerStore } from '@/stores/AddConfessionStore';
-
+import api from '@/api/axios';
+import type { confessionType } from '@/types/confession';
 import HeaderComponents from '@/components/HeaderComponents.vue';
 import ConfessionCard from '@/components/ConfessionCard.vue';
 import { ref, computed, watch, nextTick, onMounted } from 'vue';
 const timerStore = useTimerStore();
 const confessionModal = useConfessionStore();
 const newConfession = addNewConfession();
-
+const currentUser = ref<confessionType | null>(null);
 const carouselRef = ref<HTMLElement | null>(null);
 
 // Fixed speed in pixels per second
@@ -37,6 +38,7 @@ watch(
 );
 
 onMounted(async () => {
+  newConfession.fetchAllConfessions();
   await nextTick();
 });
 </script>

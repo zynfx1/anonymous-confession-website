@@ -2,7 +2,6 @@
 import { addNewConfession, useTimerStore } from '@/stores/AddConfessionStore';
 import type { confessionType } from '@/types/confession';
 import { onMounted, ref, computed } from 'vue';
-import type { st } from 'vue-router/dist/router-CWoNjPRp.mjs';
 const confessionStore = addNewConfession();
 const timeLeft = ref<number>(0);
 let timerInterval: number | null = null;
@@ -35,7 +34,6 @@ const startTimer = () => {
     } else {
       stopTimer();
       handleDelete();
-      window.location.reload();
     }
   }, 1000);
 };

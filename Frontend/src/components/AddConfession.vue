@@ -8,8 +8,6 @@ const newConfessionComment = ref('');
 const inputMinutes = ref<number>(1);
 const inputSeconds = ref<number>(30);
 
-
-  
 defineProps<{
   show: boolean;
 }>();
@@ -70,7 +68,6 @@ const addNewConfession = () => {
             />
           </div>
           <div class="font-poppins my-2 flex w-full flex-col">
-            <p>{{ timerStore.timeLeft }}</p>
             <label for="">Timer:</label>
             <div class="flex w-full">
               <input

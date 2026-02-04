@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router';
+import { ref } from 'vue';
 import HeaderComponents from './components/HeaderComponents.vue';
 import FooterComponents from './components/FooterComponents.vue';
 import AddConfession from './components/AddConfession.vue';
 import { useConfessionStore, addNewConfession } from './stores/AddConfessionStore.ts';
-
 import ConfessionCard from './components/ConfessionCard.vue';
+import type { confessionType } from './types/confession.ts';
+import { onMounted } from 'vue';
+import api from './api/axios.ts';
 
 const confessionModal = useConfessionStore();
 const newConfession = addNewConfession();
