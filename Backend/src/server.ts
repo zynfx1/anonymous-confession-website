@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import router from '../src/routes/confessionRoutes';
 
+
 const app = express();
 
 app.use(cors());

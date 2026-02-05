@@ -1,14 +1,59 @@
 <script setup lang="ts">
 import { addNewConfession, useTimerStore } from '@/stores/AddConfessionStore';
+import type { confessionType } from '@/types/confession';
+import { onMounted, ref, computed } from 'vue';
+const confessionStore = addNewConfession();
+const timeLeft = ref<number>(0);
+let timerInterval: number | null = null;
 
-const newConfession = addNewConfession();
-const timerStore = useTimerStore();
-defineProps<{
+const props = defineProps<{
   data: {
+    id: number;
     name: string;
     confession: string;
+    minutes: number;
+    seconds: number;
+    endTime: number;
   };
 }>();
+
+const handleDelete = () => {
+  confessionStore.reqDeleteCardFunction(props.data.id);
+};
+
+const formattedTime = computed(() => {
+  const min = Math.floor(timeLeft.value / 60);
+  const sec = timeLeft.value % 60;
+  return `${min}:${sec.toString().padStart(2, '0')}`;
+});
+
+const calculatedTime = () => {
+  const now = Date.now();
+  const calculatedTimeLeft = Math.floor((props.data.endTime - now) / 1000);
+  timeLeft.value = calculatedTimeLeft > 0 ? calculatedTimeLeft : 0;
+};
+const startTimer = () => {
+  timeLeft.value = props.data.minutes * 60 + props.data.seconds;
+  window.stop();
+};
+
+const stopTimer = () => {
+  if (timerInterval) clearInterval(timerInterval);
+};
+
+onMounted(() => {
+  calculatedTime();
+  timerInterval = window.setInterval(() => {
+    if (timeLeft.value > 0) {
+      calculatedTime();
+    } else {
+      stopTimer();
+      handleDelete();
+      window.location.reload();
+    }
+  }, 1000);
+  startTimer();
+});
 </script>
 
 <template>
@@ -18,7 +63,7 @@ defineProps<{
     <div class="h-full w-full">
       <div class="flex w-full items-center justify-between px-4">
         <header class=" ">Anonymous {{ data.name }}</header>
-        <header class="text-red-500">{{ timerStore.formattedTime }}</header>
+        <header class="text-red-500">{{ formattedTime }}</header>
       </div>
 
       <div class="flex flex-wrap truncate rounded-md p-4 lg:h-68 2xl:h-95">
