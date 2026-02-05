@@ -1,20 +1,18 @@
 import { Request, Response } from 'express';
 import pool from '../config/database';
 
-let confessionDb: any[] = [];
-
 export const addNewConfessionFunction = async (req: Request, res: Response) => {
-  const { id, name, confession, minutes, seconds } = req.body;
+  const { id, name, confession, minutes, seconds, endTime } = req.body;
   try {
-    const [rows]: any = await pool.query(
-      'INSERT INTO card_tb ( card_name, card_confession, card_minutes, card_seconds ) VALUES (?,?,?,?)',
-      [name, confession, minutes, seconds],
+    const totalSeconds = minutes * 60 + seconds;
+    const timerEndTime = Date.now() + totalSeconds * 1000;
+
+    await pool.query(
+      'INSERT INTO card_tb ( card_name, card_confession, card_minutes, card_seconds, timer_end_time ) VALUES (?,?,?,?,?)',
+      [name, confession, minutes, seconds, timerEndTime],
     );
-    /*await pool.query('INSERT INTO active_card ( card_confession ) VALUES (?)', [
-      confession,
-    ]);*/
     const [getConfession]: any = await pool.query(
-      'SELECT id as id,  card_name as name, card_confession as confession, card_minutes as minutes, card_seconds as seconds FROM card_tb',
+      'SELECT id as id,  card_name as name, card_confession as confession, card_minutes as minutes, card_seconds as seconds, timer_end_time as endTime FROM card_tb',
     );
 
     res.status(201).send({
@@ -27,20 +25,21 @@ export const addNewConfessionFunction = async (req: Request, res: Response) => {
   //confessionDb.push(req.body);
 };
 
-export const deleteConfessionFunction = (req: Request, res: Response) => {
+export const deleteConfessionFunction = async (req: Request, res: Response) => {
   const idToDelete = req.params.id;
-  confessionDb = confessionDb.filter((con) => con.id !== idToDelete);
-  res
-    .status(200)
-    .json({ msg: 'Successfully Deleted card', result: confessionDb });
-
-  console.log('Id deleted: ', confessionDb);
+  //confessionDb = confessionDb.filter((con) => con.id !== idToDelete);
+  try {
+    await pool.query('DELETE FROM card_tb WHERE id = ?', [idToDelete]);
+    res.status(200).json({ msg: 'Successfully Deleted card' });
+  } catch (error) {
+    res.status(500).json({ msg: 'Delete confession card error' });
+  }
 };
 
 export const activeCardFunction = async (req: Request, res: Response) => {
   try {
     const [allConfessions]: any = await pool.query(
-      'SELECT id as id, card_name as name, card_confession as confession, card_minutes as minutes, card_seconds as seconds FROM card_tb',
+      'SELECT id as id, card_name as name, card_confession as confession, card_minutes as minutes, card_seconds as seconds, timer_end_time as endTime FROM card_tb',
     );
     res.status(200).json({ msg: 'Active card found', con: allConfessions });
   } catch (error) {

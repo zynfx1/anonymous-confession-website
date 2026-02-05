@@ -8,7 +8,7 @@ const newConfession = addNewConfession();
 const carouselRef = ref<HTMLElement | null>(null);
 
 // Fixed speed in pixels per second
-const SPEED = 200; // Adjust this: lower = slower, higher = faster
+const SPEED = 20; // Adjust this: lower = slower, higher = faster
 
 const dynamicDuration = computed(() => {
   if (!carouselRef.value || newConfession.confessionList.length === 0) {
@@ -39,6 +39,8 @@ watch(
 );
 
 onMounted(() => {
+  window.stop();
+  newConfession.fetchAllConfessions();
   if (carouselRef.value) {
     carouselRef.value.style.animationDuration = `${dynamicDuration.value}s`;
   }
@@ -46,23 +48,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex h-150 w-full overflow-hidden bg-[#0f172a] py-10">
-    <div
-      ref="carouselRef"
-      :style="{ animationDuration: `${dynamicDuration}s` }"
-      class="animate-infinite-scroll-left flex w-max items-center justify-center hover:[animation-play-state:paused]"
-    >
+  <div class="font-poppins flex h-150 w-full overflow-hidden bg-[#0f172a] py-10">
+    <div class="flex h-full w-full items-center justify-center">
       <div
-        v-for="i in 5"
-        :key="i"
-        :aria-hidden="i > 1"
-        class="flex h-full w-full items-center justify-center"
+        class="bg-cherry-rose-500 inset-0 flex flex-col items-center justify-center rounded-md text-white lg:h-3/5 lg:w-3/8"
       >
-        <ConfessionCard
-          v-for="item in newConfession.confessionList"
-          :key="item.name"
-          :data="item"
-        />
+        <header
+          class="font-pinlock mt-5 flex w-full items-end justify-center p-2 text-center text-4xl"
+        >
+          Admin
+        </header>
+        <div class="flex h-full w-full flex-col items-center">
+          <p>Total Confession Card:</p>
+          <p class="text-2xl font-bold">{{ newConfession.confessionList.length }}</p>
+        </div>
       </div>
     </div>
   </div>

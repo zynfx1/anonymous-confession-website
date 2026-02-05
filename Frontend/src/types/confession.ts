@@ -4,4 +4,6 @@ export interface confessionType {
   confession: string;
   minutes: number;
   seconds: number;
+  endTime: number;
+  reload?: () => void;
 }

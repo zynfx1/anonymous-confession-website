@@ -5,8 +5,9 @@ import type { confessionType } from '@/types/confession';
 const timerStore = useTimerStore();
 const newConfessionName = ref('');
 const newConfessionComment = ref('');
-const inputMinutes = ref<number>(1);
-const inputSeconds = ref<number>(30);
+const inputMinutes = ref<number>(30);
+const inputSeconds = ref<number>(0);
+const windowsReload = window.location.reload();
 
 defineProps<{
   show: boolean;
@@ -17,12 +18,11 @@ const emit = defineEmits<{
   (e: 'minutes', input: number): void;
   (e: 'seconds', input: number): void;
   (e: 'confessionEnvelope', payload: confessionType): void;
+  (e: 'windowReload', window: () => void): void;
 }>();
 
 const addNewConfession = () => {
-  if (newConfessionComment.value === '') {
-    return;
-  }
+  if (newConfessionComment.value === '') return;
 
   const newConfession: confessionType = {
     id: Date.now(),
@@ -30,8 +30,10 @@ const addNewConfession = () => {
     confession: newConfessionComment.value,
     minutes: inputMinutes.value,
     seconds: inputSeconds.value,
-  };
+    endTime: 0,
 
+  };
+  newConfessionName.value = '';
   newConfessionComment.value = '';
   emit('confessionEnvelope', newConfession);
 };
@@ -64,6 +66,7 @@ const addNewConfession = () => {
               name=""
               id=""
               placeholder="Enter name..."
+              maxlength="1"
               class="border-cherry-rose-300 focus:outline-cherry-rose-300 w-40 rounded-sm border px-1"
             />
           </div>

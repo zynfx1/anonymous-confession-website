@@ -13,6 +13,7 @@ const props = defineProps<{
     confession: string;
     minutes: number;
     seconds: number;
+    endTime: number;
   };
 }>();
 
@@ -25,17 +26,15 @@ const formattedTime = computed(() => {
   const sec = timeLeft.value % 60;
   return `${min}:${sec.toString().padStart(2, '0')}`;
 });
+
+const calculatedTime = () => {
+  const now = Date.now();
+  const calculatedTimeLeft = Math.floor((props.data.endTime - now) / 1000);
+  timeLeft.value = calculatedTimeLeft > 0 ? calculatedTimeLeft : 0;
+};
 const startTimer = () => {
   timeLeft.value = props.data.minutes * 60 + props.data.seconds;
-
-  timerInterval = window.setInterval(() => {
-    if (timeLeft.value > 0) {
-      timeLeft.value--;
-    } else {
-      stopTimer();
-      handleDelete();
-    }
-  }, 1000);
+  window.stop();
 };
 
 const stopTimer = () => {
@@ -43,6 +42,16 @@ const stopTimer = () => {
 };
 
 onMounted(() => {
+  calculatedTime();
+  timerInterval = window.setInterval(() => {
+    if (timeLeft.value > 0) {
+      calculatedTime();
+    } else {
+      stopTimer();
+      handleDelete();
+      window.location.reload();
+    }
+  }, 1000);
   startTimer();
 });
 </script>

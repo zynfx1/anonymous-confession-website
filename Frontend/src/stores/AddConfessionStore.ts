@@ -21,7 +21,6 @@ export const useConfessionStore = defineStore('confessionStore', () => {
 
 export const addNewConfession = defineStore('newConfession', () => {
   const confessionList = ref<confessionType[]>([]);
-
   const fetchAllConfessions = async () => {
     try {
       const response = await api.get('/all-confessions');
@@ -50,7 +49,12 @@ export const addNewConfession = defineStore('newConfession', () => {
     }
   };
 
-  return { reqDeleteCardFunction, newConfessionFunction, confessionList, fetchAllConfessions };
+  return {
+    reqDeleteCardFunction,
+    newConfessionFunction,
+    confessionList,
+    fetchAllConfessions,
+  };
 });
 
 export const useTimerStore = defineStore('timerStore', () => {

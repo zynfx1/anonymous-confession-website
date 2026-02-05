@@ -5,14 +5,15 @@ import type { confessionType } from '@/types/confession';
 import HeaderComponents from '@/components/HeaderComponents.vue';
 import ConfessionCard from '@/components/ConfessionCard.vue';
 import { ref, computed, watch, nextTick, onMounted } from 'vue';
+
 const timerStore = useTimerStore();
 const confessionModal = useConfessionStore();
 const newConfession = addNewConfession();
 const currentUser = ref<confessionType | null>(null);
 const carouselRef = ref<HTMLElement | null>(null);
 
-// Fixed speed in pixels per second
-const SPEED = 10; // Adjust this: lower = slower, higher = faster
+// Fixed speed in pixels per second - this stays CONSTANT
+const PIXELS_PER_SECOND = 50; // Adjust this: lower = slower, higher = faster
 
 const dynamicDuration = computed(() => {
   if (!carouselRef.value || newConfession.confessionList.length === 0) {
@@ -26,7 +27,9 @@ const dynamicDuration = computed(() => {
   const halfWidth = carouselWidth / 2;
 
   // Duration = distance / speed
-  return halfWidth / SPEED;
+  // As halfWidth increases (more cards), duration increases proportionally
+  // This keeps the speed constant
+  return halfWidth / PIXELS_PER_SECOND;
 });
 
 // Recalculate when items change
@@ -38,10 +41,12 @@ watch(
 );
 
 onMounted(async () => {
+  window.stop();
   newConfession.fetchAllConfessions();
   await nextTick();
 });
 </script>
+
 <template>
   <div
     class="w-max-full from-custom-purple via-custom-purple item to-custom-purple flex h-screen flex-col items-center justify-center bg-linear-to-br"
@@ -52,7 +57,7 @@ onMounted(async () => {
       loop
       class="absolute inset-0 mix-blend-lighten lg:inset-y-32 lg:top-32 2xl:inset-y-31"
     >
-      <source src="../assets/video/valentines.mp4" />
+      <source src="../assets/video/valentines-general.mp4" />
     </video>
 
     <div
@@ -78,13 +83,13 @@ onMounted(async () => {
     </div>
 
     <div class="mt-30 w-full"></div>
-    <div class="absolute flex h-40 w-full items-center justify-end lg:top-170 2xl:top-233">
+    <!--<div class="absolute flex h-40 w-full items-center justify-end lg:top-170 2xl:top-233">
       <img
         src="../assets/img/plus1.png"
         alt=""
         class="mx-4 h-20 w-20 drop-shadow-lg drop-shadow-black/30 transition duration-200 ease-in-out hover:scale-105"
         @click="confessionModal.openModal"
       />
-    </div>
+    </div>-->
   </div>
 </template>
